@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1220, height=1000">
+    <title>Multi Kode HTML</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .overlay button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .stage {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1220px;
+            height: 1000px;
+            background-color: black;
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        iframe, img {
+            width: 1220px;
+            height: 1000px;
+            border: none;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay">
+        <p>Download cache sebelum mulai?</p>
+        <button onclick="start(true)">Yes</button>
+        <button onclick="start(false)">No</button>
+    </div>
+    <iframe id="stage" class="stage" src=""></iframe>
+    <img id="imageStage" class="stage" src="" alt="Image Stage">
+    
+    <script>
+        let currentStage = 0;
+        const stageDiv = document.getElementById("stage");
+        const imageStage = document.getElementById("imageStage");
+        const overlay = document.getElementById("overlay");
+        
+        const stageFiles = [
+            "index.html", "happy birthday.html", "kode3.html",
+            "gambar1.png", "gambar2.png", "gambar3.png", "gambar4.png", "gambar5.png",
+            "kode4.html", "kode5.html", "kode6.html", "kode7.html"
+        ];
+
+        function start(downloadCache) {
+            overlay.style.display = "none";
+            showStage(currentStage);
+        }
+
+        function showStage(index) {
+            stageDiv.style.display = "none";
+            imageStage.style.display = "none";
+            
+            if (stageFiles[index].endsWith(".png")) {
+                imageStage.src = stageFiles[index];
+                imageStage.style.display = "block";
+            } else {
+                stageDiv.src = stageFiles[index];
+                stageDiv.style.display = "block";
+            }
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.code === "Space") {
+                event.preventDefault();
+                if (currentStage === 0) {
+                    setTimeout(changeStage, 5000); // Tunggu 5 detik jika ditekan spasi
+                } else {
+                    changeStage();
+                }
+            }
+        });
+
+        function changeStage() {
+            if (currentStage >= stageFiles.length - 1) return;
+            currentStage++;
+            showStage(currentStage);
+        }
+
+        // Jika spasi tidak ditekan dalam 8 detik, otomatis lanjut
+        setTimeout(() => {
+            if (currentStage === 0) {
+                changeStage();
+            }
+        }, 8000);
+    </script>
+</body>
+</html>
