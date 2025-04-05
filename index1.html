@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi Kode HTML</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay button {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #imageStage {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    iframe {
+      width: 1220px;
+      height: 906px;
+      border: none;
+    }
+    video {
+      width: 1220px;
+      height: 906px;
+      object-fit: contain;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+    }
+    .hint {
+      font-size: 12px;
+      color: gray;
+      position: absolute;
+      bottom: 120px;
+    }
+    .music-player {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay">
+    <p>Download cache sebelum mulai?</p>
+    <button onclick="start(false)">Yes</button>
+    <button onclick="start(false)">No</button>
+  </div>
+  <iframe id="stage" class="stage"></iframe>
+  <img id="imageStage" class="stage" style="display: none;" />
+  <video id="video"></video>
+  <audio id="bgMusic"></audio>
+  <div class="hint">space to resume</div>
+  <div class="music-player">05/04/2025</div>
+
+  <script>
+    let currentStage = 0;
+    let stageTimeout;
+    let lastAudio = ""; // tambahkan variabel untuk simpan audio terakhir
+
+    const stageDiv = document.getElementById("stage");
+    const video = document.getElementById("video");
+    const imageStage = document.getElementById("imageStage");
+    const bgMusic = document.getElementById("bgMusic");
+    const overlay = document.getElementById("overlay");
+
+    const stageFiles = [
+      { type: "html", file: "flowers-for-someone-main/index.html", audio: "bg-music1.mp3", duration: 10 },
+      { type: "html", file: "happy birtday.html", audio: "bg-shared.mp3", duration: 11 },
+      { type: "html", file: "index3.html", audio: "bg-shared.mp3", duration: 3 },
+      { type: "image", file: "1.png", audio: "bg-shared.mp3", duration: 4 },
+      { type: "image", file: "2.png", audio: "bg-shared.mp3", duration: 4 },
+      { type: "image", file: "3.png", audio: "bg-shared.mp3", duration: 4 },
+      { type: "image", file: "4.png", audio: "bg-shared.mp3", duration: 4 },
+      { type: "image", file: "5.png", audio: "bg-shared.mp3", duration: 4 },
+      { type: "html", file: "fireworks v2.0.html", audio: "bg-shared.mp3", duration: 5 },
+      { type: "html", file: "closing1.html", audio: "bg-shared.mp3", duration: 15 }
+    ];
+
+    function start(downloadCache) {
+      overlay.style.display = "none";
+      showStage(currentStage);
+    }
+
+    function showStage(index) {
+      clearTimeout(stageTimeout);
+      stageDiv.style.display = "none";
+      video.style.display = "none";
+      imageStage.style.display = "none";
+
+      const stage = stageFiles[index];
+
+      // Tampilkan konten berdasarkan tipe
+      if (stage.type === "video") {
+        video.style.display = "block";
+        video.src = stage.file;
+        video.play();
+        video.onended = () => changeStage();
+      } else if (stage.type === "image") {
+        imageStage.style.display = "block";
+        imageStage.src = stage.file;
+      } else if (stage.type === "html") {
+        stageDiv.src = stage.file;
+        stageDiv.style.display = "block";
+      }
+
+      // Ganti audio hanya jika berbeda
+      if (stage.audio && stage.audio !== lastAudio) {
+        bgMusic.pause();
+        bgMusic.src = stage.audio;
+        bgMusic.play();
+        lastAudio = stage.audio;
+      }
+
+      if (stage.duration) {
+        stageTimeout = setTimeout(changeStage, stage.duration * 1000);
+      }
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.code === "Space") {
+        event.preventDefault();
+        changeStage();
+      }
+    });
+
+    function changeStage() {
+      if (currentStage >= stageFiles.length - 1) return;
+      currentStage++;
+      showStage(currentStage);
+    }
+  </script>
+</body>
+</html>
